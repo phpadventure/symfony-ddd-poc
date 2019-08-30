@@ -15,7 +15,7 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php,Models}'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -25,3 +25,26 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    orderContextContainer:
+        class: Contexts\Order\OrderContainer
+        calls:
+            - method: init
+        arguments:
+            - '@service_container'
+
+    Contexts\Order\OrderService:
+        arguments:
+            - '@orderContextContainer'
+
+    Contexts\Order\OrderServiceInterface: '@Contexts\Order\OrderService'
+
+    errorHandler:
+        class : App\Services\ErrorHandler
+
+    Infrastructure\Listeners\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
+        arguments:
+            - '@errorHandler'
+

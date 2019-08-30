@@ -5,7 +5,7 @@ use Infrastructure\Models\ErrorData;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-class ResourceNotFoundException extends InternalException
+class ResourceNotFoundException extends BaseHttpException
 {
     /**
      * ResourceNotFoundException constructor.

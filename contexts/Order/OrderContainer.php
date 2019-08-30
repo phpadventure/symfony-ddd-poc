@@ -4,15 +4,14 @@
 namespace Contexts\Order;
 
 use Contexts\Order\Modules\ItemService;
-use Infrastructure\ServiceContainer;
-use Infrastructure\ServiceContainerBuilder;
+use Infrastructure\Models\ServiceContainer;
 
-class ContainerBuilder  extends ServiceContainer implements ServiceContainerBuilder
+class OrderContainer  extends ServiceContainer
 {
-    public function build() : void
+    public function init() : void
     {
         $this->register(
-            'itemService', ItemService::class
+            'ItemService', ItemService::class
         );
     }
 }

@@ -1,14 +1,14 @@
 <?php
-namespace Infrastructure\Models;
+namespace Infrastructure\Exceptions\Factories;
 
-use Infrastructure\Exceptions\HttpExceptionInterface;
+use Infrastructure\Exceptions\BaseHttpException;
 use Infrastructure\Exceptions\InfrastructureException;
 
 class HttpExceptionFactory
 {
-    public function create(\Exception $exception) : HttpExceptionInterface
+    public function create(\Throwable $exception) : BaseHttpException
     {
-        if ($exception instanceof HttpExceptionInterface) {
+        if ($exception instanceof BaseHttpException) {
             return $exception;
         }
 

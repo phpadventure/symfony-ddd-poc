@@ -4,7 +4,7 @@ namespace Infrastructure\Exceptions;
 use Infrastructure\Models\ErrorData;
 use Symfony\Component\HttpFoundation\Response;
 
-class ClientErrorException extends InternalException
+class ClientErrorException extends BaseHttpException
 {
     /**
      * ClientErrorException constructor.

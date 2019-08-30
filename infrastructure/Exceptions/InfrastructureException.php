@@ -6,7 +6,7 @@ use Infrastructure\Models\ErrorData;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
-class InfrastructureException extends InternalException
+class InfrastructureException extends BaseHttpException
 {
     /**
      * InfrastructureException constructor.

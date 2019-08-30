@@ -4,7 +4,7 @@
 namespace Contexts\Order;
 
 
-interface OrderServiceInterfact
+interface OrderServiceInterface
 {
-
+    public function test() : string;
 }
