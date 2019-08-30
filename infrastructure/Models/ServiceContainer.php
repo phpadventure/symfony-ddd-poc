@@ -11,6 +11,13 @@ abstract class ServiceContainer extends ContainerBuilder
      */
     private $applicationContainer;
 
+    /**
+     * Based as mediator pattern, application container will know about all other context service
+     * and give ability to communicate through DI between service contexts
+     * ServiceContainer constructor.
+     * @param ContainerBuilder $applicationContainer
+     * @param ParameterBagInterface|null $parameterBag
+     */
     public function __construct(ContainerBuilder $applicationContainer, ParameterBagInterface $parameterBag = null)
     {
         parent::__construct($parameterBag);
