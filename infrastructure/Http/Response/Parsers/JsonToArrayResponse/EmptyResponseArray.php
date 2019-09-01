@@ -1,14 +1,10 @@
 <?php
 
-namespace Infrastructure\Models\Http\Response;
+namespace Infrastructure\Http\Response\JsonToArrayResponse;
 
-
-class EmptyResponseArray extends ArrayParsedResponse
+class EmptyResponseArray extends ResponseArray
 {
-    /**
-     * @return array
-     */
-    public function getParsedBody(): array
+    public function getBody(): array
     {
         return [];
     }

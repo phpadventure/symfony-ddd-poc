@@ -1,16 +1,14 @@
 <?php
-namespace Infrastructure\Models\Http;
+namespace Infrastructure\Http;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
-use Infrastructure\Exceptions\HttpExceptionInterface;
+use Infrastructure\Exceptions\BaseHttpException;
 use Infrastructure\Exceptions\InfrastructureException;
-use Infrastructure\Exceptions\InternalException;
 use Infrastructure\Models\ErrorData;
-use Infrastructure\Models\Http\Response\ResponseFactory;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class HttpClient
 {
@@ -19,32 +17,27 @@ class HttpClient
      */
     private $guzzleHttpClient;
 
-    /**
-     * @var ResponseFactory
-     */
-    private $responseFactory;
-
-    public function __construct(ResponseFactory $responseFactory = null)
+    public function __construct()
     {
         $this->guzzleHttpClient = new Client();
-        $this->responseFactory = $responseFactory ?? new ResponseFactory();
     }
 
     /**
      * @param RequestInterface $request
      * @return ResponseInterface
-     * @throws InternalException
+     * @throws BaseHttpException
+     * @throws InfrastructureException
      */
     public function send(RequestInterface $request): ResponseInterface
     {
         try {
-            return $this->responseFactory->createFromResponse($this->guzzleHttpClient->send($request));
+            return $this->guzzleHttpClient->send($request);
         } catch (RequestException $exception) {
             $response = $exception->getResponse();
 
-            throw new InternalException(
+            throw new BaseHttpException(
                 $exception->getMessage(),
-                HttpExceptionInterface::DEFAULT_ERROR_CODE,
+                BaseHttpException::DEFAULT_ERROR_CODE,
                 (new ErrorData())->add('content', $response->getBody()->getContents()),
                 $response->getStatusCode(),
                 (new ErrorData())->addAll($this->getResponseHeadersFormatted($request->getHeaders())),

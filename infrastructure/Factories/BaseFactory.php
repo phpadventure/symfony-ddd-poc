@@ -1,6 +1,6 @@
 <?php
 
-namespace Infrastructure\Services;
+namespace Infrastructure\Factories;
 
 use Infrastructure\Models\ArraySerializable;
 

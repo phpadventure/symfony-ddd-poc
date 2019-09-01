@@ -1,40 +1,34 @@
 <?php
-
-
 namespace Infrastructure\Mappers;
 
-
 use Infrastructure\Exceptions\InfrastructureException;
-use Infrastructure\Exceptions\InternalException;
+use Infrastructure\Factories\BaseFactory;
+use Infrastructure\Http\Models\UrlRender;
 use Infrastructure\Models\ArraySerializable;
 use Infrastructure\Models\Collection;
-use Infrastructure\Models\CollectionFactory;
 use Infrastructure\Models\Http\Headers;
-use Infrastructure\Models\Http\HttpClient;
+use Infrastructure\Http\HttpClient;
 use Infrastructure\Models\Http\RequestFactoryInterface;
-use Infrastructure\Models\Http\UrlRender;
-use Infrastructure\Models\PaginationCollection;
-use Infrastructure\Models\PaginationData;
-use Infrastructure\Models\SearchCriteria\SearchCriteria;
-use Infrastructure\Services\BaseFactory;
+use Infrastructure\Models\Http\Response\ArrayParsedResponse;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
-class HttpMapper extends BaseMapper
+class HttpJsonMapper extends BaseMapper
 {
-    public const LINKS_FIELD = 'links';
+    public const GET = 'GET';
+    public const POST = 'POST';
+    public const PUT = 'PUT';
+    public const PATCH = 'PATCH';
+    public const DELETE = 'DELETE';
 
-    public const AVAILABLE_URLS = 'availableUrls';
     public const DEFAULT_HEADERS = 'defaultHeaders';
+    public const ENDPOINTS = 'endpoints';
 
-    protected const GET = 'GET';
-    protected const POST = 'POST';
-    protected const PUT = 'PUT';
-    protected const PATCH = 'PATCH';
-    protected const DELETE = 'DELETE';
 
     /**
      * @var HttpClient
      */
-    private $httpClient = null;
+    private $httpClient;
 
     /**
      * @var BaseFactory
@@ -52,161 +46,49 @@ class HttpMapper extends BaseMapper
     private $requestFactory;
 
     /**
-     * @var UrlRender
-     */
-    protected $urlRender;
-
-    /**
      * @var array
      */
     private $config;
 
     /**
-     * HttpMapper constructor.
-     *
+     * @var ArrayParsedResponse
+     */
+    private $parsedResponse;
+
+    /**
+     * @var UrlRender
+     */
+    private $urlRender;
+
+
+    /**
+     * HttpJsonMapper constructor.
      * @param array $httpMapperConfig
      * @param HttpClient $httpClient
      * @param RequestFactoryInterface $requestFactory
+     * @param ArrayParsedResponse $parsedResponse
      * @param BaseFactory $factory
-     *
      * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
      */
     public function __construct(
         array $httpMapperConfig,
         HttpClient $httpClient,
         RequestFactoryInterface $requestFactory,
-        BaseFactory\ $factory
+        ArrayParsedResponse $parsedResponse,
+        BaseFactory $factory
     ) {
         $this->httpClient = $httpClient;
         $this->requestFactory = $requestFactory;
         $this->factory = $factory;
-
-        $this->defaultHeaders = new Headers($httpMapperConfig[self::DEFAULT_HEADERS] ?? []);
-        $this->urlRender = new UrlRender($httpMapperConfig[self::AVAILABLE_URLS]);
-
+        $this->parsedResponse = $parsedResponse;
         $this->config = $httpMapperConfig;
-    }
-
-    /**
-     * @param SearchCriteria $filter
-     * @return PaginationCollection
-     * @throws InfrastructureException
-     * @throws InternalException
-     */
-    public function load(SearchCriteria $filter): PaginationCollection
-    {
-        $params = $this->prepareParams($filter);
-
-        $result = $this->sendRequestForCollection($this->createRequest(
-            self::GET,
-            $this->urlRender->prepareLoadUrl([], $params)
-        ));
-
-        return (new CollectionFactory())
-            ->createWithPaginationFromCollection(
-                $result,
-                new PaginationData(count($result),$filter->limit(), $filter->offset())
-            );
-    }
-
-    /**
-     * @param array $identifiers
-     * @return ArraySerializable
-     * @throws InfrastructureException
-     * @throws InternalException
-     */
-    public function get(array $identifiers)
-    {
-        return $this->sendRequestForEntity(
-            $this->createRequest(self::GET, $this->urlRender->prepareGetUrl($identifiers))
+        $this->defaultHeaders = new Headers(
+            array_merge(
+                ['Content-type' => 'application/json'],
+                $httpMapperConfig[self::DEFAULT_HEADERS] ?? []
+            )
         );
-    }
-
-    /**
-     * @param array $objectData
-     * @return ArraySerializable
-     * @throws InfrastructureException
-     * @throws InternalException
-     */
-    public function create(array $objectData)
-    {
-        return $this->createObject($objectData);
-    }
-
-    /**
-     * @param array $objectData
-     * @return ArraySerializable
-     * @throws InternalException
-     * @throws \Infrastructure\Models\Http\Response\ResponseContentTypeException
-     */
-    public function update(array $objectData)
-    {
-        return $this->sendRequestForEntity(
-            $this->createRequest(self::PUT, $this->urlRender->prepareUpdateUrl($objectData), [], $objectData)
-        );
-    }
-
-    /**
-     * @param string $byPropertyName
-     * @param $propertyValue
-     * @return bool
-     * @throws InfrastructureException
-     * @throws InternalException
-     */
-    public function delete(string $byPropertyName, $propertyValue): bool
-    {
-        $this->sendRequest($this->createRequest(
-            self::DELETE, $this->urlRender->prepareDeleteUrl([$byPropertyName => $propertyValue])
-        ));
-
-        return true;
-    }
-
-    /**
-     * @param array $objectData
-     * @return Collection|mixed
-     * @throws InternalException
-     * @throws \Infrastructure\Models\Http\Response\ResponseContentTypeException
-     */
-    public function updatePatch(array $objectData)
-    {
-        return $this->sendRequestForEntity(
-            $this->createRequest(self::PATCH, $this->urlRender->prepareUpdateUrl($objectData), [], $objectData)
-        );
-    }
-
-    /**
-     * @param RequestInterface $request
-     * @return \Infrastructure\Models\Http\ResponseInterface
-     * @throws InternalException
-     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
-     * @throws \Infrastructure\Models\Http\Response\ResponseContentTypeException
-     */
-    protected function sendRequest(RequestInterface $request)
-    {
-        return $this->getHttpClient()->send($this->mergeDefaultData($request));
-    }
-
-    /**
-     * @param RequestInterface $request
-     * @return ArraySerializable
-     * @throws InternalException
-     * @throws \Infrastructure\Models\Http\Response\ResponseContentTypeException
-     */
-    protected function sendRequestForEntity(RequestInterface $request): ArraySerializable
-    {
-        return $this->buildObject($this->sendRequest($request)->getParsedBody());
-    }
-
-    /**
-     * @param RequestInterface $request
-     * @return Collection
-     * @throws InternalException
-     * @throws \Infrastructure\Models\Http\Response\ResponseContentTypeException
-     */
-    protected function sendRequestForCollection(RequestInterface $request): Collection
-    {
-        return $this->buildCollection($this->sendRequest($request)->getParsedBody());
+        $this->urlRender = new UrlRender($httpMapperConfig[self::ENDPOINTS]);
     }
 
     /**
@@ -215,57 +97,24 @@ class HttpMapper extends BaseMapper
      */
     protected function buildObject(array $objectData) : ArraySerializable
     {
-        return $this->factory->create($objectData);
+        return $this->factory()->create($objectData);
     }
 
     /**
-     * @param ArraySerializable $object
-     *
-     * @return ArraySerializable
-     *
-     * @throws InternalException
-     * @throws \Infrastructure\Models\Http\Response\ResponseContentTypeException
+     * @param $method
+     * @param $uri
+     * @param array $headers
+     * @param array $body
+     * @return RequestInterface
      */
-    protected function createObject(ArraySerializable $object): ArraySerializable
+    protected function createRequest(string $method, string $uri, array $headers = [], array $body = [])
     {
-        return $this->sendRequestForEntity(
-            $this->createRequest(self::POST, $this->urlRender->prepareCreateUrl($object->toArray()), [], $object->toArray())
+        return $this->requestFactory()->create(
+            $method,
+            $uri,
+            $headers,
+            (count($body) ? json_encode($body) : null)
         );
-    }
-
-    /**
-     * @param ArraySerializable $object
-     *
-     * @return ArraySerializable
-     *
-     * @throws InfrastructureException
-     */
-    protected function updateObject(ArraySerializable $object): ArraySerializable
-    {
-        throw new InfrastructureException('the method is not supported');
-    }
-
-    /**
-     * @return HttpClient
-     */
-    protected function getHttpClient()
-    {
-        return $this->httpClient;
-    }
-
-    /**
-     * @param SearchCriteria $filter
-     * @return array
-     */
-    private function prepareParams(SearchCriteria $filter): array
-    {
-        $params = array_merge([
-            SearchCriteria::LIMIT => $filter->limit(),
-            SearchCriteria::OFFSET => $filter->offset()
-        ], $filter->orderBy());
-
-        $params = array_merge($params, $filter->conditions());
-        return $params;
     }
 
     /**
@@ -278,9 +127,180 @@ class HttpMapper extends BaseMapper
         return $this->createRequest(
             $request->getMethod(),
             $request->getUri(),
-            $this->defaultHeaders->merge(new Headers($request->getHeaders()))->toArray(),
+            $this->defaultHeaders()->merge(new Headers($request->getHeaders()))->toArray(),
             (($body = json_decode($request->getBody()->getContents(), true)) ? $body : [])
         );
+    }
+
+    /**
+     * @return ArrayParsedResponse
+     */
+    protected function parsedResponse(): ArrayParsedResponse
+    {
+        return $this->parsedResponse;
+    }
+
+    /**
+     * @param $urlIdentifier
+     * @param array $urlParams
+     * @param array $query
+     * @param array $headers
+     * @return ArraySerializable
+     * @throws InfrastructureException
+     * @throws \Infrastructure\Exceptions\BaseHttpException
+     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
+     */
+    public function get($urlIdentifier, array $urlParams, array $query = [], array $headers = [])
+    {
+        return $this->sendRequestForEntity(
+            $this->createRequest(self::GET, $this->urlRender()->build($urlIdentifier, $urlParams, $query), $headers)
+        );
+    }
+
+    /**
+     * @param $urlIdentifier
+     * @param array $urlParams
+     * @param array $query
+     * @param array $headers
+     * @return Collection
+     * @throws InfrastructureException
+     * @throws \Infrastructure\Exceptions\BaseHttpException
+     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
+     */
+    public function load($urlIdentifier, array $urlParams, array $query = [], array $headers = []): Collection
+    {
+        return $this->sendRequestForCollection(
+            $this->createRequest(
+                self::GET,
+                $this->urlRender()->build($urlIdentifier, $urlParams, $query),
+                $headers
+            )
+        );
+    }
+
+    /**
+     * @param $urlIdentifier
+     * @param array $urlParams
+     * @param array $objectData
+     * @param array $headers
+     * @return ArraySerializable
+     * @throws InfrastructureException
+     * @throws \Infrastructure\Exceptions\BaseHttpException
+     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
+     */
+    public function post($urlIdentifier, array $urlParams, array $objectData, array $headers = [])
+    {
+        return $this->sendRequestForEntity(
+            $this->createRequest(self::POST, $this->urlRender()->build($urlIdentifier, $urlParams), $headers , $objectData)
+        );
+    }
+
+    /**
+     * @param $urlIdentifier
+     * @param array $urlParams
+     * @param array $objectData
+     * @param array $headers
+     * @return ArraySerializable
+     * @throws InfrastructureException
+     * @throws \Infrastructure\Exceptions\BaseHttpException
+     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
+     */
+    public function put($urlIdentifier, array $urlParams, array $objectData, array $headers = [])
+    {
+        return $this->sendRequestForEntity(
+            $this->createRequest(self::PUT, $this->urlRender()->build($urlIdentifier, $urlParams), $headers , $objectData)
+        );
+    }
+
+    /**
+     * @param $urlIdentifier
+     * @param array $urlParams
+     * @param array $objectData
+     * @param array $headers
+     * @return ArraySerializable
+     * @throws InfrastructureException
+     * @throws \Infrastructure\Exceptions\BaseHttpException
+     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
+     */
+    public function patch($urlIdentifier, array $urlParams, array $objectData, array $headers = [])
+    {
+        return $this->sendRequestForEntity(
+            $this->createRequest(self::PATCH, $this->urlRender()->build($urlIdentifier, $urlParams), $headers , $objectData)
+        );
+    }
+
+    /**
+     * @param $urlIdentifier
+     * @param array $urlParams
+     * @param array $query
+     * @param array $headers
+     * @return bool
+     * @throws InfrastructureException
+     * @throws \Infrastructure\Exceptions\BaseHttpException
+     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
+     */
+    public function delete($urlIdentifier, array $urlParams, array $query = [], array $headers = []): bool
+    {
+        $this->sendRequest($this->createRequest(
+            self::DELETE, $this->urlRender()->build($urlIdentifier, $urlParams, $query), $headers)
+        );
+
+        return true;
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @return ResponseInterface
+     * @throws InfrastructureException
+     * @throws \Infrastructure\Exceptions\BaseHttpException
+     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
+     */
+    protected function sendRequest(RequestInterface $request) : ResponseInterface
+    {
+        return $this->httpClient()->send($this->mergeDefaultData($request));
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @return ArraySerializable
+     * @throws InfrastructureException
+     * @throws \Infrastructure\Exceptions\BaseHttpException
+     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
+     */
+    protected function sendRequestForEntity(RequestInterface $request): ArraySerializable
+    {
+        return $this->buildObject(
+            $this->parsedResponse()->getParsedBody(
+                $this->sendRequest($request)
+            )
+        );
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @return Collection
+     * @throws InfrastructureException
+     * @throws \Infrastructure\Exceptions\BaseHttpException
+     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
+     */
+    protected function sendRequestForCollection(RequestInterface $request): Collection
+    {
+        return $this->buildCollection(
+            $this->parsedResponse()->getParsedBody($this->sendRequest($request))
+        );
+    }
+
+    protected function urlRender()
+    {
+        return $this->urlRender;
+    }
+
+    /**
+     * @return HttpClient
+     */
+    protected function httpClient()
+    {
+        return $this->httpClient;
     }
 
     /**
@@ -292,19 +312,26 @@ class HttpMapper extends BaseMapper
     }
 
     /**
-     * @param $method
-     * @param $uri
-     * @param array $headers
-     * @param array $body
-     * @return RequestInterface
+     * @return BaseFactory
      */
-    protected function createRequest($method, $uri, array $headers = [], array $body = [])
+    protected function factory(): BaseFactory
     {
-        return $this->requestFactory->create(
-            $method,
-            $uri,
-            $headers,
-            (count($body) ? json_encode($body) : null)
-        );
+        return $this->factory;
+    }
+
+    /**
+     * @return Headers
+     */
+    protected function defaultHeaders(): Headers
+    {
+        return $this->defaultHeaders;
+    }
+
+    /**
+     * @return RequestFactoryInterface
+     */
+    protected function requestFactory(): RequestFactoryInterface
+    {
+        return $this->requestFactory;
     }
 }

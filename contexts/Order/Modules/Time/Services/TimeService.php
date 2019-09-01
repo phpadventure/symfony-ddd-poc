@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Contexts\Order\Modules\Time;
+namespace Contexts\Order\Modules\Time\Services;
 
 
 use Infrastructure\BaseService;

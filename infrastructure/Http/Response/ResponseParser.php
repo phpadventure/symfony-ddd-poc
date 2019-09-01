@@ -4,7 +4,9 @@
 namespace Infrastructure\Http\Response;
 
 
-class ResponseParser
-{
+use Psr\Http\Message\ResponseInterface;
 
+interface ResponseParser
+{
+    public function parse(ResponseInterface $response) : array ;
 }

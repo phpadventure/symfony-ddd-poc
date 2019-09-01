@@ -2,16 +2,20 @@
 
 namespace Infrastructure\Models\Http\Response;
 
+use Infrastructure\Http\Response\ResponseParser;
 use \Psr\Http\Message\ResponseInterface;
 
-abstract class ParsedResponse
+class ArrayParsedResponse
 {
-    private $response;
+    private $parserStrategy;
 
-    public function __construct(ResponseInterface $response)
+    public function __construct(ResponseParser $parserStrategy)
     {
-        $this->response = $response;
+        $this->parserStrategy = $parserStrategy;
     }
 
-    public abstract function getParsedBody();
+    public function getParsedBody(ResponseInterface $response) : array
+    {
+        return $this->parserStrategy->parse($response);
+    }
 }

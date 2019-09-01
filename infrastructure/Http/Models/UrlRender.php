@@ -1,16 +1,10 @@
 <?php
 
-namespace Infrastructure\Models\Http;
+namespace Infrastructure\Http\Models;
 
 
 class UrlRender
 {
-    public const LOAD_URL = 'loadUrl';
-    public const GET_URL = 'getUrl';
-    public const CREATE_URL = 'createUrl';
-    public const UPDATE_URL = 'updateUrl';
-    public const DELETE_URL = 'deleteUrl';
-
     /**
      * @var array
      */
@@ -26,76 +20,31 @@ class UrlRender
     }
 
     /**
-     * @param string $key
-     * @param array $data
-     * @param array $params
+     * @param string $urlIdentifier
+     * @param array $urlParams
+     * @param array $query
      * @return string
      */
-    public function prepareUrl(string $key, array $data = [], array $params = [])
+    public function build(string $urlIdentifier, array $urlParams = [], array $query = [])
     {
-        return $this->buildUrl($this->render($key, $data), $params);
+        return $this->attachQuery(
+            $this->setParamPlaceHolders(
+                $this->urlsPlaceholders[$urlIdentifier], $urlParams
+            ), $query
+        );
     }
 
-    /**
-     * @param array $data
-     * @param array $params
-     * @return string
-     */
-    public function prepareLoadUrl(array $data = [], array $params = []): string
-    {
-        return $this->buildUrl($this->render(self::LOAD_URL, $data), $params);
-    }
 
     /**
-     * @param array $data
-     * @param array $params
+     * @param string $urlIdentifier
+     * @param array $urlParams
      * @return string
      */
-    public function prepareGetUrl(array $data = [], array $params = []): string
-    {
-        return $this->buildUrl($this->render(self::GET_URL, $data), $params);
-    }
-
-    /**
-     * @param array $data
-     * @param array $params
-     * @return string
-     */
-    public function prepareCreateUrl(array $data = [], array $params = []): string
-    {
-        return $this->buildUrl($this->render(self::CREATE_URL, $data), $params);
-    }
-
-    /**
-     * @param array $data
-     * @param array $params
-     * @return string
-     */
-    public function prepareUpdateUrl(array $data = [], array $params = []): string
-    {
-        return $this->buildUrl($this->render(self::UPDATE_URL, $data), $params);
-    }
-
-    /**
-     * @param array $data
-     * @param array $params
-     * @return string
-     */
-    public function prepareDeleteUrl(array $data = [], array $params = []): string
-    {
-        return $this->buildUrl($this->render(self::DELETE_URL, $data), $params);
-    }
-
-    /**
-     * @param string $key
-     * @param array $data
-     * @return string
-     */
-    public function render(string $key, array $data = []): string
+    private function setParamPlaceHolders(string $url, array $urlParams = []): string
     {
         return strtr(
-            $this->urlsPlaceholders[$key],
-            array_combine($this->extractPlaceholders($data), array_values($data))
+            $url,
+            array_combine($this->extractPlaceholders($urlParams), array_values($urlParams))
         );
     }
 
@@ -110,15 +59,15 @@ class UrlRender
 
     /**
      * @param string $url
-     * @param array $params
+     * @param array $query
      * @return string
      */
-    private function buildUrl(string $url, array $params = [])
+    private function attachQuery(string $url, array $query = [])
     {
         $url = trim($url, '&?');
-        if (!empty($params)) {
+        if (!empty($query)) {
             $separator = strpos($url, '?') === false ? '?' : '&';
-            $url = $url . $separator . http_build_query($params);
+            $url = $url . $separator . http_build_query($query);
         }
         return $url;
     }

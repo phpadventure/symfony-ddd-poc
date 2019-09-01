@@ -4,7 +4,21 @@
 namespace Infrastructure\Http\Response\JsonToArrayResponse;
 
 
-interface ResponseArray
+use Psr\Http\Message\ResponseInterface;
+
+abstract class ResponseArray
 {
-    public function getBody() : array ;
+    private $response;
+
+    public function __construct(ResponseInterface $response)
+    {
+        $this->response = $response;
+    }
+
+    abstract public function getBody() : array ;
+
+    protected function getResponse() : ResponseInterface
+    {
+        return $this->response;
+    }
 }

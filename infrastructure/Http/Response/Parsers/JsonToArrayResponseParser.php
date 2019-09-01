@@ -1,82 +1,43 @@
 <?php
 
 
-namespace Infrastructure\Http\Response;
+namespace Infrastructure\Http\Response\Parsers;
 
 
-use Infrastructure\Models\Http\Response\ArrayParsedResponse;
-use Infrastructure\Models\Http\Response\EmptyResponseArray;
-use Infrastructure\Models\Http\Response\JsonResponseArray;
-use Infrastructure\Models\Http\Response\RawResponseArray;
-use Infrastructure\Models\Http\Response\ResponseContentTypeException;
+use Infrastructure\Http\Response\JsonToArrayResponse\EmptyResponseArray;
+use Infrastructure\Http\Response\JsonToArrayResponse\JsonResponseArray;
+use Infrastructure\Http\Response\JsonToArrayResponse\RawResponseArray;
+use Infrastructure\Http\Response\JsonToArrayResponse\ResponseArray;
+use Infrastructure\Http\Response\ResponseParser;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class JsonToArrayResponseParser implements ResponseParser
 {
+    public const CONTENT_TYPE_JSON =  'application/json';
+
     public function parse(ResponseInterface $response) : array
     {
+        return $this->createResponseArray($response)->getBody();
     }
 
-
-    /**
-     * @param PsrResponseInterface $response
-     * @return ArrayParsedResponse
-     */
-    public function createFromResponse(PsrResponseInterface $response): ArrayParsedResponse
+    private function createResponseArray(ResponseInterface $response) : ResponseArray
     {
-        $contentType = $response->getHeader('Content-Type')[0] ?? '';
-
         if ($response->getStatusCode() == Response::HTTP_NO_CONTENT) {
             return new EmptyResponseArray($response);
         }
 
-        foreach ($this->getContentTypeResponseMap($response) as $allowedContentType => $creatorResponse) {
-            if ($this->isAllowedContentType($contentType, $allowedContentType)) {
-                return $creatorResponse($response);
-            }
+        if ($this->isJsonMeta($response)) {
+            return new JsonResponseArray($response);
         }
 
         return new RawResponseArray($response);
     }
 
-    /**
-     * @param PsrResponseInterface $response
-     * @return array
-     */
-    private function getContentTypeResponseMap(PsrResponseInterface $response)
+    private function isJsonMeta(ResponseInterface $response): bool
     {
-        return [
-            ResponseInterface::CONTENT_TYPE_JSON => function() use($response) {
-                return $this->createJsonResponse($response);
-            },
-            ResponseInterface::CONTENT_TYPE_XML => function() use($response) {
-                return $this->createXmlResponse($response);
-            },
-        ];
-    }
+        $contentType = $response->getHeader('Content-Type')[0] ?? '';
 
-    private function isAllowedContentType(string $contentType, $allowedContentType): bool
-    {
-        return stripos($contentType, $allowedContentType) !== false;
-    }
-
-    /**
-     * @param PsrResponseInterface $response
-     * @return JsonResponseArray
-     */
-    private function createJsonResponse(PsrResponseInterface $response): JsonResponseArray
-    {
-        return new JsonResponseArray($response);
-    }
-
-    /**
-     * @param PsrResponseInterface $response
-     * @throws ResponseContentTypeException
-     */
-    private function createXmlResponse(PsrResponseInterface $response)
-    {
-        throw new ResponseContentTypeException(ResponseInterface::CONTENT_TYPE_XML);
+        return stripos($contentType, self::CONTENT_TYPE_JSON) !== false;
     }
 }

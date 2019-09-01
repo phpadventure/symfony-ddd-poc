@@ -1,15 +1,11 @@
 <?php
 
-namespace Infrastructure\Models\Http\Response;
+namespace Infrastructure\Http\Response\JsonToArrayResponse;
 
-
-class RawResponseArray extends ArrayParsedResponse
+class RawResponseArray extends ResponseArray
 {
-    /**
-     * @return array
-     */
-    public function getParsedBody(): array
+    public function getBody(): array
     {
-        return [$this->getBody()->getContents()];
+        return [$this->getResponse()->getBody()->getContents()];
     }
 }
