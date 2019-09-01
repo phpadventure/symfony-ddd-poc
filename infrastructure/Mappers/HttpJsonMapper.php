@@ -3,17 +3,17 @@ namespace Infrastructure\Mappers;
 
 use Infrastructure\Exceptions\InfrastructureException;
 use Infrastructure\Factories\BaseFactory;
+use Infrastructure\Http\Models\Headers;
 use Infrastructure\Http\Models\UrlRender;
+use Infrastructure\Http\RequestFactoryInterface;
 use Infrastructure\Models\ArraySerializable;
 use Infrastructure\Models\Collection;
-use Infrastructure\Models\Http\Headers;
 use Infrastructure\Http\HttpClient;
-use Infrastructure\Models\Http\RequestFactoryInterface;
-use Infrastructure\Models\Http\Response\ArrayParsedResponse;
+use Infrastructure\Http\Response\ArrayParsedResponse;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class HttpJsonMapper extends BaseMapper
+abstract class HttpJsonMapper extends BaseMapper
 {
     public const GET = 'GET';
     public const POST = 'POST';
@@ -68,7 +68,7 @@ class HttpJsonMapper extends BaseMapper
      * @param RequestFactoryInterface $requestFactory
      * @param ArrayParsedResponse $parsedResponse
      * @param BaseFactory $factory
-     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
+     * @throws \Infrastructure\Http\Exceptions\IllegalHeaderValueException
      */
     public function __construct(
         array $httpMapperConfig,
@@ -120,7 +120,7 @@ class HttpJsonMapper extends BaseMapper
     /**
      * @param RequestInterface $request
      * @return RequestInterface
-     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
+     * @throws \Infrastructure\Http\Exceptions\IllegalHeaderValueException
      */
     protected function mergeDefaultData(RequestInterface $request)
     {
@@ -148,7 +148,6 @@ class HttpJsonMapper extends BaseMapper
      * @return ArraySerializable
      * @throws InfrastructureException
      * @throws \Infrastructure\Exceptions\BaseHttpException
-     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
      */
     public function get($urlIdentifier, array $urlParams, array $query = [], array $headers = [])
     {
@@ -165,7 +164,6 @@ class HttpJsonMapper extends BaseMapper
      * @return Collection
      * @throws InfrastructureException
      * @throws \Infrastructure\Exceptions\BaseHttpException
-     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
      */
     public function load($urlIdentifier, array $urlParams, array $query = [], array $headers = []): Collection
     {
@@ -186,7 +184,6 @@ class HttpJsonMapper extends BaseMapper
      * @return ArraySerializable
      * @throws InfrastructureException
      * @throws \Infrastructure\Exceptions\BaseHttpException
-     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
      */
     public function post($urlIdentifier, array $urlParams, array $objectData, array $headers = [])
     {
@@ -220,7 +217,6 @@ class HttpJsonMapper extends BaseMapper
      * @return ArraySerializable
      * @throws InfrastructureException
      * @throws \Infrastructure\Exceptions\BaseHttpException
-     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
      */
     public function patch($urlIdentifier, array $urlParams, array $objectData, array $headers = [])
     {
@@ -237,7 +233,6 @@ class HttpJsonMapper extends BaseMapper
      * @return bool
      * @throws InfrastructureException
      * @throws \Infrastructure\Exceptions\BaseHttpException
-     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
      */
     public function delete($urlIdentifier, array $urlParams, array $query = [], array $headers = []): bool
     {
@@ -253,7 +248,7 @@ class HttpJsonMapper extends BaseMapper
      * @return ResponseInterface
      * @throws InfrastructureException
      * @throws \Infrastructure\Exceptions\BaseHttpException
-     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
+     * @throws \Infrastructure\Http\Exceptions\IllegalHeaderValueException
      */
     protected function sendRequest(RequestInterface $request) : ResponseInterface
     {
@@ -265,7 +260,7 @@ class HttpJsonMapper extends BaseMapper
      * @return ArraySerializable
      * @throws InfrastructureException
      * @throws \Infrastructure\Exceptions\BaseHttpException
-     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
+     * @throws \Infrastructure\Http\Exceptions\IllegalHeaderValueException
      */
     protected function sendRequestForEntity(RequestInterface $request): ArraySerializable
     {
@@ -281,7 +276,7 @@ class HttpJsonMapper extends BaseMapper
      * @return Collection
      * @throws InfrastructureException
      * @throws \Infrastructure\Exceptions\BaseHttpException
-     * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
+     * @throws \Infrastructure\Http\Exceptions\IllegalHeaderValueException
      */
     protected function sendRequestForCollection(RequestInterface $request): Collection
     {

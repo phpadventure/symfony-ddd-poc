@@ -1,6 +1,7 @@
 <?php
 namespace Infrastructure\Models;
 
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -12,13 +13,11 @@ abstract class ServiceContainer extends ContainerBuilder
     private $applicationContainer;
 
     /**
-     * Based as mediator pattern, application container will know about all other context service
-     * and give ability to communicate through DI between service contexts
      * ServiceContainer constructor.
-     * @param ContainerBuilder $applicationContainer
+     * @param Container $applicationContainer
      * @param ParameterBagInterface|null $parameterBag
      */
-    public function __construct(ContainerBuilder $applicationContainer, ParameterBagInterface $parameterBag = null)
+    public function __construct(Container $applicationContainer, ParameterBagInterface $parameterBag = null)
     {
         parent::__construct($parameterBag);
         $this->applicationContainer = $applicationContainer;
@@ -29,10 +28,10 @@ abstract class ServiceContainer extends ContainerBuilder
         return parent::register($id, $class)->setPublic($public);
     }
 
-    public function getApplicationContainer(): ContainerBuilder
+    public function getApplicationContainer(): Container
     {
         return $this->applicationContainer;
     }
 
-    abstract public function init() : void;
+    abstract public function init() : ServiceContainer;
 }

@@ -25,46 +25,15 @@ class Config
         '{Y-m-d}' => ['gmdate' => 'Y-m-d'],
         '{H:i:s}' => ['gmdate' => 'H:i:s'],
         '{YmdHis}' => ['gmdate' => 'YmdHis'],
-        '{process_id}' => ['getmypid' => ''],
     ];
 
     /**
      * Config constructor.
-     * @param $config
-     * @throws InfrastructureException
+     * @param array $config
      */
-    public function __construct($config)
+    public function __construct(array $config)
     {
-        if ($config === null){
-            throw new InfrastructureException('You should specified config path');
-        }
-
-        $configData =[];
-
-        if (!is_array($config)){
-            $configData = $this->parseFile($config);
-        }
-
-        if (is_array($config)){
-            $configData = $config;
-        }
-
-        $this->setDataForConfig($configData);
-    }
-
-    /**
-     * @param $fileName
-     * @return array
-     */
-    private function parseFile($fileName) : array
-    {
-        if ($this->getFileExtension($fileName) === 'ini'){
-            return parse_ini_file($fileName, true);
-        }
-
-        if ($this->getFileExtension($fileName) === 'php'){
-            return require $fileName;
-        }
+        $this->dataForConfig = $config;
     }
 
     /**
@@ -120,35 +89,6 @@ class Config
     }
 
     /**
-     * @param $dataValue
-     * @return array
-     * @throws InfrastructureException
-     */
-    private function renderArray($dataValue) : array
-    {
-        $result = [];
-
-        foreach ($dataValue as $fieldName => $value) {
-            if (is_array($value)){
-                $result[$fieldName] = $this->renderArray($dataValue);
-                continue;
-            }
-
-            $result[$fieldName] = $this->renderValue($value);
-        }
-
-        return $result;
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray() : array
-    {
-        return $this->getConfigList();
-    }
-
-    /**
      * @param $name
      * @param $argument
      * @return mixed
@@ -188,7 +128,7 @@ class Config
     {
         $this->setConfigList(array_replace_recursive($this->getConfigList(), $config->getConfigList()));
         $this->placeholders = array_replace_recursive($this->placeholders, $config->getPlaceholders());
-        $this->dataForConfig = array_replace_recursive($this->dataForConfig, $config->getDataForConfig());
+        $this->dataForConfig = array_replace_recursive($this->dataForConfig, $config->dataForConfig);
 
         return $this;
     }
@@ -199,7 +139,7 @@ class Config
      */
     public function has($fieldName) : bool
     {
-        return array_key_exists($fieldName, $this->getConfigList()) || array_key_exists($fieldName, $this->getDataForConfig());
+        return array_key_exists($fieldName, $this->getConfigList()) || array_key_exists($fieldName, $this->dataForConfig);
     }
 
     /**
@@ -208,15 +148,6 @@ class Config
     public function getConfigList() : array
     {
         return $this->configList;
-    }
-
-    /**
-     * @return string
-     */
-    private function getFileExtension($filename) : string
-    {
-        $path_info = pathinfo($filename);
-        return $path_info['extension'];
     }
 
     /**
@@ -288,23 +219,5 @@ class Config
         }
 
         return $this->addPlaceholders($this->dataForConfig[self::CONFIG_PLACEHOLDERS]);
-    }
-
-    /**
-     * @return array
-     */
-    public function getDataForConfig() : array
-    {
-        return $this->dataForConfig;
-    }
-
-    /**
-     * @param array $dataForConfig
-     * @return Config
-     */
-    private function setDataForConfig($dataForConfig) : Config
-    {
-        $this->dataForConfig = $dataForConfig;
-        return $this;
     }
 }

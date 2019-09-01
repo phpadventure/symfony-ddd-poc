@@ -4,10 +4,10 @@
 namespace Infrastructure\Http\Response\Parsers;
 
 
-use Infrastructure\Http\Response\JsonToArrayResponse\EmptyResponseArray;
-use Infrastructure\Http\Response\JsonToArrayResponse\JsonResponseArray;
-use Infrastructure\Http\Response\JsonToArrayResponse\RawResponseArray;
-use Infrastructure\Http\Response\JsonToArrayResponse\ResponseArray;
+use Infrastructure\Http\Response\Parsers\JsonToArrayResponse\EmptyResponseArray;
+use Infrastructure\Http\Response\Parsers\JsonToArrayResponse\JsonResponseArray;
+use Infrastructure\Http\Response\Parsers\JsonToArrayResponse\RawResponseArray;
+use Infrastructure\Http\Response\Parsers\JsonToArrayResponse\ResponseArray;
 use Infrastructure\Http\Response\ResponseParser;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;

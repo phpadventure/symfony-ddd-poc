@@ -1,8 +1,7 @@
 <?php
+namespace Infrastructure\Http\Models;
 
-namespace Infrastructure\Models\Http;
-
-
+use Infrastructure\Http\Exceptions\IllegalHeaderValueException;
 use Infrastructure\Models\ArraySerializable;
 
 class Headers implements ArraySerializable

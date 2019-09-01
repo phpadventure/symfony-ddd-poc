@@ -36,7 +36,7 @@ class UrlRender
 
 
     /**
-     * @param string $urlIdentifier
+     * @param string $url
      * @param array $urlParams
      * @return string
      */

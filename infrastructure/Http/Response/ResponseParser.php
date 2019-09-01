@@ -8,5 +8,5 @@ use Psr\Http\Message\ResponseInterface;
 
 interface ResponseParser
 {
-    public function parse(ResponseInterface $response) : array ;
+    public function parse(ResponseInterface $response) ;
 }

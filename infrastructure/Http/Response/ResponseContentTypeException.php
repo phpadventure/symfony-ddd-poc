@@ -1,6 +1,6 @@
 <?php
 
-namespace Infrastructure\Models\Http\Response;
+namespace Infrastructure\Http\Response;
 
 
 use Infrastructure\Exceptions\InfrastructureException;

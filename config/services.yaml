@@ -30,7 +30,7 @@ services:
     # please note that last definitions always *replace* previous ones
 
     orderContextContainer:
-        class: Contexts\Order\OrderContainer
+        class: Contexts\Order\Configs\OrderContainer
         calls:
             - method: init
         arguments:

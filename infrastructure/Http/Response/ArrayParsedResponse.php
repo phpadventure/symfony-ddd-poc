@@ -1,8 +1,7 @@
 <?php
 
-namespace Infrastructure\Models\Http\Response;
+namespace Infrastructure\Http\Response;
 
-use Infrastructure\Http\Response\ResponseParser;
 use \Psr\Http\Message\ResponseInterface;
 
 class ArrayParsedResponse

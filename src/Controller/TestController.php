@@ -7,7 +7,6 @@ use Infrastructure\Models\ArraySerializable;
 use Infrastructure\Models\Collection;
 use Infrastructure\Models\CollectionFilter;
 use Infrastructure\Models\CollectionWalk;
-use Infrastructure\Http\HttpClient;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,6 +21,16 @@ class TestController extends AbstractController
     public function test(OrderServiceInterface $orderService) : JsonResponse
     {
         return new JsonResponse([$orderService->test()]);
+    }
+
+    /**
+     * @Route("/time")
+     * @param OrderServiceInterface $orderService
+     * @return JsonResponse
+     */
+    public function time(OrderServiceInterface $orderService) : JsonResponse
+    {
+        return new JsonResponse($orderService->time()->toArray());
     }
 
     /**
