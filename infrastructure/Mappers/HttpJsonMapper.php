@@ -9,7 +9,7 @@ use Infrastructure\Http\RequestFactoryInterface;
 use Infrastructure\Models\ArraySerializable;
 use Infrastructure\Models\Collection;
 use Infrastructure\Http\HttpClient;
-use Infrastructure\Http\Response\ArrayParsedResponse;
+use Infrastructure\Http\Models\Response\ArrayParsedResponse;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 

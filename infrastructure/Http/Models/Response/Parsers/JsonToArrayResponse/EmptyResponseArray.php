@@ -1,6 +1,6 @@
 <?php
 
-namespace Infrastructure\Http\Response\Parsers\JsonToArrayResponse;
+namespace Infrastructure\Http\Models\Response\Parsers\JsonToArrayResponse;
 
 class EmptyResponseArray extends ResponseArray
 {

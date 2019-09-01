@@ -4,8 +4,8 @@
 use Infrastructure\Http\HttpClient;
 use Infrastructure\Http\GuzzleRequestFactory;
 use Infrastructure\Http\RequestFactoryInterface;
-use Infrastructure\Http\Response\Parsers\JsonToArrayResponseParser;
-use Infrastructure\Http\Response\ArrayParsedResponse;
+use Infrastructure\Http\Models\Response\Parsers\JsonToArrayResponseParser;
+use Infrastructure\Http\Models\Response\ArrayParsedResponse;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 

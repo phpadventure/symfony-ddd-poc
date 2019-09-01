@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Infrastructure\Http\Response\Parsers\JsonToArrayResponse;
+namespace Infrastructure\Http\Models\Response\Parsers\JsonToArrayResponse;
 
 
 use Psr\Http\Message\ResponseInterface;

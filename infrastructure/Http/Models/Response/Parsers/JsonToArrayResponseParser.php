@@ -1,14 +1,14 @@
 <?php
 
 
-namespace Infrastructure\Http\Response\Parsers;
+namespace Infrastructure\Http\Models\Response\Parsers;
 
 
-use Infrastructure\Http\Response\Parsers\JsonToArrayResponse\EmptyResponseArray;
-use Infrastructure\Http\Response\Parsers\JsonToArrayResponse\JsonResponseArray;
-use Infrastructure\Http\Response\Parsers\JsonToArrayResponse\RawResponseArray;
-use Infrastructure\Http\Response\Parsers\JsonToArrayResponse\ResponseArray;
-use Infrastructure\Http\Response\ResponseParser;
+use Infrastructure\Http\Models\Response\Parsers\JsonToArrayResponse\EmptyResponseArray;
+use Infrastructure\Http\Models\Response\Parsers\JsonToArrayResponse\JsonResponseArray;
+use Infrastructure\Http\Models\Response\Parsers\JsonToArrayResponse\RawResponseArray;
+use Infrastructure\Http\Models\Response\Parsers\JsonToArrayResponse\ResponseArray;
+use Infrastructure\Http\Models\Response\ResponseParser;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\HttpFoundation\Response;
 
