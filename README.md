@@ -32,5 +32,6 @@ Used guzzle as http client, and created based http mapper which cover requests.
 
 # DB repository
 Used doctrine ORM. Based on IoC injected all repositiories in services.
+Also used abstraction to cover repositories functionality and make it reusable.
   
   
