@@ -4,16 +4,22 @@
 namespace Contexts\Order;
 
 
-use Contexts\Order\Modules\ItemService;
+use Contexts\Order\Modules\Item\Services\ItemService;
 use Contexts\Order\Modules\Time\Models\Time;
 use Contexts\Order\Modules\Time\Services\TimeService;
 use Infrastructure\BaseService;
+use Infrastructure\Models\Collection;
 
 class OrderService extends BaseService implements OrderServiceInterface
 {
     public function test(): string
     {
         return  $this->getItemService()->sayHi();
+    }
+
+    public function loadItems() : Collection
+    {
+        return $this->getItemService()->load();
     }
 
     public function time() : Time

@@ -7,6 +7,7 @@ parameters:
 
 imports:
     - { resource: ../infrastructure/Configs/infrastructureDI.php }
+    - { resource: ../contexts/Order/Configs/doctrineConfiguration.php  }
 
 services:
     # default configuration for services in *this* file
@@ -18,7 +19,7 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/*'
-        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php,Models}'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php,Models,Repositories}'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
