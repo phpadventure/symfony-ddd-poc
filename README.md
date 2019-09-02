@@ -19,8 +19,8 @@ Use symfony as primary vendor for app development because of wide usage and powe
 - check requests on /bmw, /bmw-list, /test, /time, /items. This will test functionality for collection and work or db repositories and rest mappers.
 
 # Contexts
-For bounded contexts use isolated containers. They are located in Contexts/<name>/Configs folder.
-Each module also contain its container. Location : Contexts/<name>/Modules/<name>/Configs folder.
+For bounded contexts use isolated containers. They are located in Contexts/{name}/Configs folder.
+Each module also contain its container. Location : Contexts/{name}/Modules/{name}/Configs folder.
 To improve perfomance all service contexts are registered in app container provided by symfony and be used in app/presentation layer with full powerfull functionality of symfony DI.
 To give access to all infrastructure service, infrusture services are mereged into app containe as a configuration file.
 App container used as mediator pattern and passed back into service context to get access to other context services and infrustructure services.
