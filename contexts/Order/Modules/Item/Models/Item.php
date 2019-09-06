@@ -11,7 +11,10 @@ use Infrastructure\Models\ArraySerializable;
  */
 class Item implements ArraySerializable
 {
+    public const ID = 'id';
     public const NAME = 'name';
+    public const PRICE = 'PRICE';
+    public const DESCRIPTION = 'description';
 
     /**
      * @ORM\Id()
@@ -34,6 +37,22 @@ class Item implements ArraySerializable
      * @ORM\Column(type="string", length=190)
      */
     private $description;
+
+    /**
+     * Item constructor.
+     * @param $id
+     * @param $name
+     * @param $price
+     * @param $description
+     */
+    public function __construct($id, $name, $price, $description)
+    {
+        $this->id = $id;
+        $this->name = $name;
+        $this->price = $price;
+        $this->description = $description;
+    }
+
 
     public function getId(): ?int
     {
@@ -79,6 +98,7 @@ class Item implements ArraySerializable
     public function toArray(): array
     {
         return [
+            self::ID => $this->getId(),
             self::NAME => $this->getName(),
         ];
     }

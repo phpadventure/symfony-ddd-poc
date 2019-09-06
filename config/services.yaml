@@ -45,10 +45,3 @@ services:
 
     errorHandler:
         class : App\Services\ErrorHandler
-
-    Infrastructure\Listeners\ExceptionListener:
-        tags:
-            - { name: kernel.event_listener, event: kernel.exception }
-        arguments:
-            - '@errorHandler'
-

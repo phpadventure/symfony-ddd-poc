@@ -6,6 +6,9 @@ use Infrastructure\Http\GuzzleRequestFactory;
 use Infrastructure\Http\RequestFactoryInterface;
 use Infrastructure\Http\Models\Response\Parsers\JsonToArrayResponseParser;
 use Infrastructure\Http\Models\Response\ArrayParsedResponse;
+use Infrastructure\Listeners\BeforeRequestListener;
+use Infrastructure\Listeners\ExceptionListener;
+use Infrastructure\Services\ErrorHandler;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -20,3 +23,12 @@ $container->register('JsonToArrayResponseParser', JsonToArrayResponseParser::cla
 $container->register('jsonToArrayParsedResponse', ArrayParsedResponse::class)
     ->setArgument('$parserStrategy', new Reference('JsonToArrayResponseParser'))
     ->setPublic(true);
+
+$container->register('errorHandler', ErrorHandler::class);
+
+$container->register(ExceptionListener::class)
+    ->addArgument(new Reference('errorHandler'))
+    ->addTag('kernel.event_subscriber');
+
+$container->register(BeforeRequestListener::class)
+    ->addTag('kernel.event_subscriber');

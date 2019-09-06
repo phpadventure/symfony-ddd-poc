@@ -13,7 +13,7 @@ $container->loadFromExtension('doctrine', [
                 'dir'       => '%kernel.project_dir%/contexts/Order/Modules/Item/Models',
                 'is_bundle' => false,
                 'prefix'    => 'Contexts\Order\Modules\Item\Models',
-                'alias'     => 'Order\Item',
+                'alias'     => 'Order:Item',
             ],
         ],
     ],

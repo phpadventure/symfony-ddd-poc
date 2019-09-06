@@ -3,10 +3,11 @@
 namespace App\Repository;
 
 
+use Contexts\Order\Modules\Item\Factories\ItemFactory;
 use Contexts\Order\Modules\Item\Models\Item;
 use Contexts\Order\Modules\Item\Repositories\ItemRepositoryInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Infrastructure\Models\Collection;
+use Infrastructure\Factories\BaseFactory;
 use Infrastructure\Repositories\ORM\BaseServiceRepository;
 
 /**
@@ -22,11 +23,10 @@ class ItemRepository extends BaseServiceRepository implements ItemRepositoryInte
         parent::__construct($registry, Item::class);
     }
 
-    public function load(): Collection
+    public function createFactory(): BaseFactory
     {
-        return new Collection($this->findAll());
+        return new ItemFactory();
     }
-
 
     // /**
     //  * @return Item[] Returns an array of Item objects

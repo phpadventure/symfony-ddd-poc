@@ -34,16 +34,6 @@ class TestController extends AbstractController
     }
 
     /**
-     * @Route("/items")
-     * @param OrderServiceInterface $orderService
-     * @return JsonResponse
-     */
-    public function items(OrderServiceInterface $orderService) : JsonResponse
-    {
-        return new JsonResponse($orderService->loadItems()->toArray());
-    }
-
-    /**
      * @Route("/bmw-list")
      * @return JsonResponse
      */

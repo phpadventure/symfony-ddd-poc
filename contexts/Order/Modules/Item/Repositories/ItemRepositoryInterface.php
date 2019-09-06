@@ -3,7 +3,6 @@
 namespace Contexts\Order\Modules\Item\Repositories;
 
 use Contexts\Order\Modules\Item\Models\Item;
-use Infrastructure\Models\Collection;
 use Infrastructure\Repositories\ORM\RepositoryInterface;
 
 /**
@@ -14,5 +13,4 @@ use Infrastructure\Repositories\ORM\RepositoryInterface;
  */
 interface ItemRepositoryInterface extends RepositoryInterface
 {
-    public function load() : Collection;
 }
