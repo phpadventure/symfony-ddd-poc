@@ -13,7 +13,7 @@ class Item implements ArraySerializable
 {
     public const ID = 'id';
     public const NAME = 'name';
-    public const PRICE = 'PRICE';
+    public const PRICE = 'price';
     public const DESCRIPTION = 'description';
 
     /**
