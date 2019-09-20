@@ -2,7 +2,6 @@
 
 namespace Infrastructure\Http\Exceptions;
 
-
 use Infrastructure\Exceptions\InfrastructureException;
 
 class IllegalHeaderValueException extends InfrastructureException

@@ -1,9 +1,11 @@
 <?php
 namespace Infrastructure\Models;
 
+use Closure;
+
 class CollectionFactory
 {
-    public function create(array $objectsParams, \Closure $buildObject) : Collection
+    public function create(array $objectsParams, Closure $buildObject) : Collection
     {
         $collection = new Collection();
         foreach ($objectsParams as $objectParams) {
@@ -13,7 +15,7 @@ class CollectionFactory
         return $collection;
     }
 
-    public function createWithPaginationFromArray(array $objectsParams, PaginationData $paginationData, \Closure $buildObject) : PaginationCollection
+    public function createWithPaginationFromArray(array $objectsParams, PaginationData $paginationData, Closure $buildObject) : PaginationCollection
     {
         return new PaginationCollection(
             $this->create($objectsParams, $buildObject),

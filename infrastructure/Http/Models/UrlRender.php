@@ -2,7 +2,6 @@
 
 namespace Infrastructure\Http\Models;
 
-
 class UrlRender
 {
     /**
@@ -29,8 +28,10 @@ class UrlRender
     {
         return $this->attachQuery(
             $this->setParamPlaceHolders(
-                $this->urlsPlaceholders[$urlIdentifier], $urlParams
-            ), $query
+                $this->urlsPlaceholders[$urlIdentifier],
+                $urlParams
+            ),
+            $query
         );
     }
 
@@ -54,7 +55,9 @@ class UrlRender
      */
     private function extractPlaceholders(array $data = []): array
     {
-        return array_map(function ($propertyName) {return ':' . $propertyName;}, array_keys($data));
+        return array_map(function ($propertyName) {
+            return ':' . $propertyName;
+        }, array_keys($data));
     }
 
     /**

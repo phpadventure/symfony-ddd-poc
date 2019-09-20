@@ -3,7 +3,6 @@
 
 namespace Infrastructure\Mappers;
 
-
 use Infrastructure\Models\ArraySerializable;
 use Infrastructure\Models\Collection;
 use Infrastructure\Models\CollectionFactory;

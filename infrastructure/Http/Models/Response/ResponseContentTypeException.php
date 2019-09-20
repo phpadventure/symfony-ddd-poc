@@ -2,7 +2,6 @@
 
 namespace Infrastructure\Http\Models\Response;
 
-
 use Infrastructure\Exceptions\InfrastructureException;
 
 class ResponseContentTypeException extends InfrastructureException

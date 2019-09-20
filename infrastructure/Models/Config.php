@@ -43,7 +43,7 @@ class Config
      */
     public function get($name)
     {
-        if (!array_key_exists($name, $this->getConfigList())){
+        if (!array_key_exists($name, $this->getConfigList())) {
             return $this->loadData($name);
         }
         return $this->getConfigList()[$name];
@@ -56,13 +56,13 @@ class Config
      */
     private function loadData($name)
     {
-        if (!array_key_exists($name, $this->dataForConfig)){
+        if (!array_key_exists($name, $this->dataForConfig)) {
             throw new InfrastructureException('There isn\'t property ' . $name . ' in config');
         }
 
         $fieldValue = $this->dataForConfig[$name];
 
-        if (is_array($fieldValue)){
+        if (is_array($fieldValue)) {
             return $this->add($name, $fieldValue)->get($name);
         }
 
@@ -194,13 +194,13 @@ class Config
 
         $placeholderParams = $this->getPlaceholders()[$templateName];
 
-        if (!is_array($placeholderParams)){
+        if (!is_array($placeholderParams)) {
             return $placeholderParams;
         }
 
         $functionName = key($placeholderParams);
 
-        if (!is_callable($functionName)){
+        if (!is_callable($functionName)) {
             throw new InfrastructureException('Function ' . key($placeholderParams) . 'isn\'t callable');
         }
 
@@ -214,7 +214,7 @@ class Config
      */
     private function loadPlaceholder($templateName) : Config
     {
-        if (!array_key_exists(self::CONFIG_PLACEHOLDERS, $this->dataForConfig)){
+        if (!array_key_exists(self::CONFIG_PLACEHOLDERS, $this->dataForConfig)) {
             throw new InfrastructureException('Template ' . $templateName . 'doesn\'t exsist in placeholders config');
         }
 

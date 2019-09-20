@@ -16,7 +16,9 @@ class ErrorHandler implements ErrorHandlerInterface
                 'message' => $exception->getMessage(),
                 'errorCode' => $exception->getErrorCode(),
                 'errors' => $exception->getBody()
-            ], $exception->getStatusCode(), $exception->getHeaders()
+            ],
+            $exception->getStatusCode(),
+            $exception->getHeaders()
         );
     }
 }

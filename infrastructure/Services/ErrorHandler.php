@@ -11,5 +11,4 @@ class ErrorHandler implements ErrorHandlerInterface
     {
         throw $exception;
     }
-
 }

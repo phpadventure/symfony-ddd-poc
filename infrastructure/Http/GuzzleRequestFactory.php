@@ -2,7 +2,7 @@
 
 namespace Infrastructure\Http;
 
-
+use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\RequestInterface;
 
 class GuzzleRequestFactory implements RequestFactoryInterface
@@ -16,6 +16,6 @@ class GuzzleRequestFactory implements RequestFactoryInterface
      */
     public function create($method, $uri, array $headers = [], $body = null): RequestInterface
     {
-        return new \GuzzleHttp\Psr7\Request($method, $uri, $headers, $body);
+        return new Request($method, $uri, $headers, $body);
     }
 }

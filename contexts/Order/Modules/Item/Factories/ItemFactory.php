@@ -1,8 +1,5 @@
 <?php
-
-
 namespace Contexts\Order\Modules\Item\Factories;
-
 
 use Contexts\Order\Modules\Item\Models\Item;
 use Infrastructure\Factories\BaseFactory;

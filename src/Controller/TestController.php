@@ -40,8 +40,8 @@ class TestController extends AbstractController
     public function collectionWalk() : JsonResponse
     {
         $collection = new Collection([
-            'a' => new Car('v8',Car::NAME_AUDI,''),
-            'b' => new Car('v8',Car::NAME_BMW,''),
+            'a' => new Car('v8', Car::NAME_AUDI, ''),
+            'b' => new Car('v8', Car::NAME_BMW, ''),
         ]);
 
         $bmwCollection = $collection->walk($this->walkBMW());
@@ -56,8 +56,8 @@ class TestController extends AbstractController
     public function collectionFilter() : JsonResponse
     {
         $collection = new Collection([
-            'a' => new Car('v8',Car::NAME_AUDI,'sedan'),
-            'b' => new Car('v8',Car::NAME_BMW,'sedan'),
+            'a' => new Car('v8', Car::NAME_AUDI, 'sedan'),
+            'b' => new Car('v8', Car::NAME_BMW, 'sedan'),
         ]);
 
         $bmwCollection = $collection->filter($this->filterBMW());
@@ -65,7 +65,8 @@ class TestController extends AbstractController
         return new JsonResponse($bmwCollection->toArray());
     }
 
-    private function filterBMW() : CollectionFilter {
+    private function filterBMW() : CollectionFilter
+    {
         return new class() implements CollectionFilter
         {
             public function invoke(ArraySerializable $model, $key): bool
@@ -76,7 +77,8 @@ class TestController extends AbstractController
         };
     }
 
-    private function walkBMW() : CollectionWalk {
+    private function walkBMW() : CollectionWalk
+    {
         return new class() implements CollectionWalk
         {
             public function invoke(ArraySerializable $model, $key): void

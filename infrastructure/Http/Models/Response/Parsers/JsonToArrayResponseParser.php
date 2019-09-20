@@ -3,7 +3,6 @@
 
 namespace Infrastructure\Http\Models\Response\Parsers;
 
-
 use Infrastructure\Http\Models\Response\Parsers\JsonToArrayResponse\EmptyResponseArray;
 use Infrastructure\Http\Models\Response\Parsers\JsonToArrayResponse\JsonResponseArray;
 use Infrastructure\Http\Models\Response\Parsers\JsonToArrayResponse\RawResponseArray;

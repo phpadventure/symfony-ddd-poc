@@ -2,11 +2,12 @@
 
 namespace Infrastructure\Exceptions;
 
+use Exception;
 use Infrastructure\Models\ErrorData;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Throwable;
 
-class BaseHttpException extends \Exception implements HttpExceptionInterface
+class BaseHttpException extends Exception implements HttpExceptionInterface
 {
     const DEFAULT_ERROR_CODE = 0;
 

@@ -18,9 +18,9 @@ class Headers implements ArraySerializable
      */
     public function __construct(array $headers = [])
     {
-          foreach ($headers as $name => $value) {
-              $this->addHeader($name, $value);
-          }
+        foreach ($headers as $name => $value) {
+            $this->addHeader($name, $value);
+        }
     }
 
     /**

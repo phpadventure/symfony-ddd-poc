@@ -10,7 +10,7 @@ use Contexts\Order\Modules\Time\Services\TimeService;
 use Infrastructure\Models\Config;
 use Infrastructure\Models\ServiceContainer;
 
-class OrderContainer  extends ServiceContainer
+class OrderContainer extends ServiceContainer
 {
     public function init() : ServiceContainer
     {

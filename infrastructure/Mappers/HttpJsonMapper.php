@@ -1,8 +1,10 @@
 <?php
 namespace Infrastructure\Mappers;
 
+use Infrastructure\Exceptions\BaseHttpException;
 use Infrastructure\Exceptions\InfrastructureException;
 use Infrastructure\Factories\BaseFactory;
+use Infrastructure\Http\Exceptions\IllegalHeaderValueException;
 use Infrastructure\Http\Models\Headers;
 use Infrastructure\Http\Models\UrlRender;
 use Infrastructure\Http\RequestFactoryInterface;
@@ -68,7 +70,7 @@ abstract class HttpJsonMapper extends BaseMapper
      * @param RequestFactoryInterface $requestFactory
      * @param ArrayParsedResponse $parsedResponse
      * @param BaseFactory $factory
-     * @throws \Infrastructure\Http\Exceptions\IllegalHeaderValueException
+     * @throws IllegalHeaderValueException
      */
     public function __construct(
         array $httpMapperConfig,
@@ -120,7 +122,7 @@ abstract class HttpJsonMapper extends BaseMapper
     /**
      * @param RequestInterface $request
      * @return RequestInterface
-     * @throws \Infrastructure\Http\Exceptions\IllegalHeaderValueException
+     * @throws IllegalHeaderValueException
      */
     protected function mergeDefaultData(RequestInterface $request)
     {
@@ -147,7 +149,7 @@ abstract class HttpJsonMapper extends BaseMapper
      * @param array $headers
      * @return ArraySerializable
      * @throws InfrastructureException
-     * @throws \Infrastructure\Exceptions\BaseHttpException
+     * @throws BaseHttpException
      */
     public function get($urlIdentifier, array $urlParams, array $query = [], array $headers = [])
     {
@@ -163,7 +165,7 @@ abstract class HttpJsonMapper extends BaseMapper
      * @param array $headers
      * @return Collection
      * @throws InfrastructureException
-     * @throws \Infrastructure\Exceptions\BaseHttpException
+     * @throws BaseHttpException
      */
     public function load($urlIdentifier, array $urlParams, array $query = [], array $headers = []): Collection
     {
@@ -183,12 +185,12 @@ abstract class HttpJsonMapper extends BaseMapper
      * @param array $headers
      * @return ArraySerializable
      * @throws InfrastructureException
-     * @throws \Infrastructure\Exceptions\BaseHttpException
+     * @throws BaseHttpException
      */
     public function post($urlIdentifier, array $urlParams, array $objectData, array $headers = [])
     {
         return $this->sendRequestForEntity(
-            $this->createRequest(self::POST, $this->urlRender()->build($urlIdentifier, $urlParams), $headers , $objectData)
+            $this->createRequest(self::POST, $this->urlRender()->build($urlIdentifier, $urlParams), $headers, $objectData)
         );
     }
 
@@ -199,13 +201,13 @@ abstract class HttpJsonMapper extends BaseMapper
      * @param array $headers
      * @return ArraySerializable
      * @throws InfrastructureException
-     * @throws \Infrastructure\Exceptions\BaseHttpException
+     * @throws BaseHttpException
      * @throws \Infrastructure\Models\Http\IllegalHeaderValueException
      */
     public function put($urlIdentifier, array $urlParams, array $objectData, array $headers = [])
     {
         return $this->sendRequestForEntity(
-            $this->createRequest(self::PUT, $this->urlRender()->build($urlIdentifier, $urlParams), $headers , $objectData)
+            $this->createRequest(self::PUT, $this->urlRender()->build($urlIdentifier, $urlParams), $headers, $objectData)
         );
     }
 
@@ -216,12 +218,12 @@ abstract class HttpJsonMapper extends BaseMapper
      * @param array $headers
      * @return ArraySerializable
      * @throws InfrastructureException
-     * @throws \Infrastructure\Exceptions\BaseHttpException
+     * @throws BaseHttpException
      */
     public function patch($urlIdentifier, array $urlParams, array $objectData, array $headers = [])
     {
         return $this->sendRequestForEntity(
-            $this->createRequest(self::PATCH, $this->urlRender()->build($urlIdentifier, $urlParams), $headers , $objectData)
+            $this->createRequest(self::PATCH, $this->urlRender()->build($urlIdentifier, $urlParams), $headers, $objectData)
         );
     }
 
@@ -232,13 +234,15 @@ abstract class HttpJsonMapper extends BaseMapper
      * @param array $headers
      * @return bool
      * @throws InfrastructureException
-     * @throws \Infrastructure\Exceptions\BaseHttpException
+     * @throws BaseHttpException
      */
     public function delete($urlIdentifier, array $urlParams, array $query = [], array $headers = []): bool
     {
         $this->sendRequest($this->createRequest(
-            self::DELETE, $this->urlRender()->build($urlIdentifier, $urlParams, $query), $headers)
-        );
+            self::DELETE,
+            $this->urlRender()->build($urlIdentifier, $urlParams, $query),
+            $headers
+        ));
 
         return true;
     }
@@ -247,8 +251,8 @@ abstract class HttpJsonMapper extends BaseMapper
      * @param RequestInterface $request
      * @return ResponseInterface
      * @throws InfrastructureException
-     * @throws \Infrastructure\Exceptions\BaseHttpException
-     * @throws \Infrastructure\Http\Exceptions\IllegalHeaderValueException
+     * @throws BaseHttpException
+     * @throws IllegalHeaderValueException
      */
     protected function sendRequest(RequestInterface $request) : ResponseInterface
     {
@@ -259,8 +263,8 @@ abstract class HttpJsonMapper extends BaseMapper
      * @param RequestInterface $request
      * @return ArraySerializable
      * @throws InfrastructureException
-     * @throws \Infrastructure\Exceptions\BaseHttpException
-     * @throws \Infrastructure\Http\Exceptions\IllegalHeaderValueException
+     * @throws BaseHttpException
+     * @throws IllegalHeaderValueException
      */
     protected function sendRequestForEntity(RequestInterface $request): ArraySerializable
     {
@@ -275,8 +279,8 @@ abstract class HttpJsonMapper extends BaseMapper
      * @param RequestInterface $request
      * @return Collection
      * @throws InfrastructureException
-     * @throws \Infrastructure\Exceptions\BaseHttpException
-     * @throws \Infrastructure\Http\Exceptions\IllegalHeaderValueException
+     * @throws BaseHttpException
+     * @throws IllegalHeaderValueException
      */
     protected function sendRequestForCollection(RequestInterface $request): Collection
     {

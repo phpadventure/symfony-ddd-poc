@@ -102,6 +102,4 @@ class Item implements ArraySerializable
             self::NAME => $this->getName(),
         ];
     }
-
-
 }

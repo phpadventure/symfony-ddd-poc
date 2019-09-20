@@ -2,8 +2,11 @@
 
 namespace Infrastructure\Models;
 
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
 
-class Collection implements \IteratorAggregate, \Countable, ArraySerializable
+class Collection implements IteratorAggregate, Countable, ArraySerializable
 {
     const ITEMS = 'items';
 
@@ -128,11 +131,11 @@ class Collection implements \IteratorAggregate, \Countable, ArraySerializable
     }
 
     /**
-     * @return \ArrayIterator
+     * @return ArrayIterator
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->collection);
+        return new ArrayIterator($this->collection);
     }
 
     /**

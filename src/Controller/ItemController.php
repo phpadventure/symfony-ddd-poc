@@ -38,7 +38,7 @@ class ItemController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    public function updateItem(OrderServiceInterface $orderService,int  $id, Request $request) : JsonResponse
+    public function updateItem(OrderServiceInterface $orderService, int  $id, Request $request) : JsonResponse
     {
         return new JsonResponse($orderService->updateItem($id, $request->request->all())->toArray(), Response::HTTP_CREATED);
     }
@@ -50,7 +50,7 @@ class ItemController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    public function deleteItem(OrderServiceInterface $orderService,int $id, Request $request) : JsonResponse
+    public function deleteItem(OrderServiceInterface $orderService, int $id, Request $request) : JsonResponse
     {
         $orderService->delete($id);
 
@@ -64,7 +64,7 @@ class ItemController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    public function getItem(OrderServiceInterface $orderService,int $id, Request $request) : JsonResponse
+    public function getItem(OrderServiceInterface $orderService, int $id, Request $request) : JsonResponse
     {
         return new JsonResponse($orderService->getByItemId($id)->toArray(), Response::HTTP_OK);
     }

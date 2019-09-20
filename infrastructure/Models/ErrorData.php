@@ -2,7 +2,9 @@
 
 namespace Infrastructure\Models;
 
-class ErrorData implements \Countable
+use Countable;
+
+class ErrorData implements Countable
 {
     /**
      * @var array

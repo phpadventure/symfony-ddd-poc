@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Infrastructure\Repositories\ORM;
-
 
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -23,9 +21,9 @@ abstract class BaseServiceRepository extends ServiceEntityRepository implements 
         parent::__construct($registry, $entityClass);
     }
 
-    abstract public function createFactory() : BaseFactory;
+    abstract public function createFactory(): BaseFactory;
 
-    public function save(ArraySerializable $entity) : ArraySerializable
+    public function save(ArraySerializable $entity): ArraySerializable
     {
         $this->_em->persist($entity);
         $this->_em->flush();
@@ -56,19 +54,22 @@ abstract class BaseServiceRepository extends ServiceEntityRepository implements 
 
     public function batchSave(Collection $entities)
     {
-        $entities->walk(new class($this->_em) implements CollectionWalk {
-            private $entityManager;
-
-            public function __construct(EntityManagerInterface $entityManager)
+        $entities->walk(
+            new class($this->_em) implements CollectionWalk
             {
-                $this->entityManager = $entityManager;
-            }
+                private $entityManager;
 
-            public function invoke(ArraySerializable $model, $key): void
-            {
-                $this->entityManager->merge($model);
+                public function __construct(EntityManagerInterface $entityManager)
+                {
+                    $this->entityManager = $entityManager;
+                }
+
+                public function invoke(ArraySerializable $model, $key): void
+                {
+                    $this->entityManager->merge($model);
+                }
             }
-        });
+        );
 
         $this->_em->flush();
     }
@@ -78,12 +79,12 @@ abstract class BaseServiceRepository extends ServiceEntityRepository implements 
         return new Collection($this->findBy($criteria, $orderBy, $limit, $offset));
     }
 
-    public function create(array $data) : ArraySerializable
+    public function create(array $data): ArraySerializable
     {
         return $this->save($this->build($data));
     }
 
-    public function update(array $criteria, array $data) : ArraySerializable
+    public function update(array $criteria, array $data): ArraySerializable
     {
         $entity = $this->findOneBy($criteria);
 
@@ -110,12 +111,12 @@ abstract class BaseServiceRepository extends ServiceEntityRepository implements 
         $this->delete($entity);
     }
 
-    protected function build(array $data) : ArraySerializable
+    protected function build(array $data): ArraySerializable
     {
         return $this->factory()->create($data);
     }
 
-    private function factory() : BaseFactory
+    private function factory(): BaseFactory
     {
         if ($this->factory === null) {
             return $this->factory = $this->createFactory();

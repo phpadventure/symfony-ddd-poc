@@ -3,7 +3,6 @@
 
 namespace Infrastructure\Http\Models\Response\Parsers\JsonToArrayResponse;
 
-
 use Psr\Http\Message\ResponseInterface;
 
 abstract class ResponseArray
@@ -15,7 +14,7 @@ abstract class ResponseArray
         $this->response = $response;
     }
 
-    abstract public function getBody() : array ;
+    abstract public function getBody() : array;
 
     protected function getResponse() : ResponseInterface
     {

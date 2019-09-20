@@ -3,7 +3,6 @@
 
 namespace Infrastructure;
 
-
 use Infrastructure\Models\ServiceContainer;
 
 abstract class BaseService
@@ -15,7 +14,8 @@ abstract class BaseService
         $this->container = $container;
     }
 
-    public function getContainer() : ServiceContainer {
+    public function getContainer() : ServiceContainer
+    {
         return $this->container;
     }
 }
