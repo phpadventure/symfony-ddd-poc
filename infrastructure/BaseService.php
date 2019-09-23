@@ -14,7 +14,7 @@ abstract class BaseService
         $this->container = $container;
     }
 
-    public function getContainer() : ServiceContainer
+    protected function getContainer() : ServiceContainer
     {
         return $this->container;
     }
