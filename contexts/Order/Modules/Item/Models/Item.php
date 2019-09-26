@@ -100,6 +100,8 @@ class Item implements ArraySerializable
         return [
             self::ID => $this->getId(),
             self::NAME => $this->getName(),
+            self::DESCRIPTION => $this->getDescription(),
+            self::PRICE => $this->getPrice()
         ];
     }
 }
