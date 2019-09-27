@@ -21,7 +21,7 @@ class ItemService extends BaseService
 
     public function update($id, array $data): Item
     {
-        return $this->getItemRepository()->update([Item::ID => $id], $data);
+        return $this->getItemRepository()->update([Item::ID => $id], array_merge($data, [Item::ID => $id]));
     }
 
     public function delete($id): void
