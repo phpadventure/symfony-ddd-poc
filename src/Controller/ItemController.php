@@ -40,7 +40,7 @@ class ItemController extends AbstractController
      */
     public function updateItem(OrderServiceInterface $orderService, int  $id, Request $request) : JsonResponse
     {
-        return new JsonResponse($orderService->updateItem($id, $request->request->all())->toArray(), Response::HTTP_CREATED);
+        return new JsonResponse($orderService->updateItem($id, $request->request->all())->toArray(), Response::HTTP_OK);
     }
 
     /**
